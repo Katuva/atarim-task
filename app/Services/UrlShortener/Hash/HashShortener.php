@@ -5,6 +5,7 @@ namespace App\Services\UrlShortener\Hash;
 use App\Services\UrlShortener\UrlShortenerInterface;
 use App\Models\Url;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Random\RandomException;
 use RuntimeException;
 
@@ -33,23 +34,22 @@ final class HashShortener implements UrlShortenerInterface
                 throw new RuntimeException('Could not generate a unique URL code.');
             }
 
-            $salt = bin2hex(random_bytes(Config::get('shortener.salt_length')));
+            $salt = bin2hex(random_bytes(Config::get('shortener.hash.salt_length')));
 
             // Defaulted using xxh3 in the config to hash the URL as from research it is the fastest hashing
             // algorithm, and we are not concerned with cryptographic security.
             // Also added the salt to the URL for added entropy.
-            $hashed = hash(Config::get('shortener.hash_algorithm'), $url . $salt);
-
             // Base64 encode the hash and replace the characters that are not URL safe.
             // This is more for the aesthetics rather than adding any real value.
-            $code = base64_encode($hashed);
-            str_replace(['+', '/', '='], ['A', 'a', ''], $code);
+            $code = Str::of(hash(Config::get('shortener.hash.algorithm'), $url . $salt))
+                ->toBase64()
+                ->replace(['+', '/', '='], ['A', 'a', '']);
 
             // Make sure we have a long enough code to truncate. Otherwise, we'll just use the whole thing.
-            if (strlen($code) > Config::get('shortener.code_length')) {
+            if ($code->length() > Config::get('shortener.code_length')) {
                 // Grab the first X characters of the encoded hash. We don't care about the rest, and with the added
                 // entropy from the salt, we shouldn't have any collisions.
-                $code = substr($code, 0, Config::get('shortener.code_length'));
+                $code = $code->take(Config::get('shortener.code_length'));
             }
         } while (Url::where('code', $code)->exists());
 

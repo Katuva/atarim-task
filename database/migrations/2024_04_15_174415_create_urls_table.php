@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('urls', static function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->string('code');
+            $table->string('code')->nullable();
             $table->timestamps();
 
             $table->unique('code');

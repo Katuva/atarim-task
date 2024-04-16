@@ -15,8 +15,9 @@ class UrlShortenerTest extends TestCase
     public function testItSuccessfullyEncodesAUrl(): void
     {
         // Set known defaults for testing
+        Config::set('shortener.driver', 'hash');
         Config::set('shortener.code_length', 6);
-        Config::set('shortener.hash_algorithm', 'xxh3');
+        Config::set('shortener.hash.algorithm', 'xxh3');
 
         $response = $this->post('/api/encode', [
             'url' => 'https://www.example.com',
@@ -36,8 +37,9 @@ class UrlShortenerTest extends TestCase
 
     public function testItSuccessfullyEncodesAUrlWithADifferentHashAlgorithm(): void
     {
+        Config::set('shortener.driver', 'hash');
         Config::set('shortener.code_length', 6);
-        Config::set('shortener.hash_algorithm', 'sha256');
+        Config::set('shortener.hash.algorithm', 'sha256');
 
         $response = $this->post('/api/encode', [
             'url' => 'https://www.example.com',
@@ -57,9 +59,10 @@ class UrlShortenerTest extends TestCase
 
     public function testItSuccessfullyEncodesAUrlAndReturnsTheFullCode(): void
     {
-        // This is above the maximum length of 24 characters, so forces the code to be returned in full
+        Config::set('shortener.driver', 'hash');
+        // This is above the maximum length of 22 characters, so forces the code to be returned in full
         Config::set('shortener.code_length', 50);
-        Config::set('shortener.hash_algorithm', 'xxh3');
+        Config::set('shortener.hash.algorithm', 'xxh3');
 
         $response = $this->post('/api/encode', [
             'url' => 'https://www.example.com',
@@ -74,7 +77,7 @@ class UrlShortenerTest extends TestCase
         ]);
 
         $code = $response->json('data.code');
-        $this->assertEquals(24, strlen($code));
+        $this->assertEquals(22, strlen($code));
     }
 
     public function testItFailsToEncodeAnInvalidUrl(): void

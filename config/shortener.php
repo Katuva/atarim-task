@@ -20,16 +20,11 @@ return [
 
     'max_tries' => env('SHORTENER_MAX_TRIES', 100),
 
-    /*
-     * The hashing algorithm to use to hash the URL.
-     */
-
-    'hash_algorithm' => env('SHORTENER_HASH_ALGORITHM', 'xxh3'),
-
-    /*
-     * The length of the salt to add to the URL before hashing.
-     */
-
-    'salt_length' => env('SHORTENER_SALT_LENGTH', 16),
+    'hash' => [
+        // The hashing algorithm to use to hash the URL.
+        'algorithm' => env('SHORTENER_HASH_ALGORITHM', 'xxh3'),
+        // The length of the salt to add to the URL before hashing.
+        'salt_length' => env('SHORTENER_SALT_LENGTH', 16),
+    ],
 
 ];
