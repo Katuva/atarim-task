@@ -6,6 +6,7 @@ use App\Models\Url;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Sqids\Sqids;
 use Tests\TestCase;
 
 class UrlShortenerTest extends TestCase
@@ -121,6 +122,54 @@ class UrlShortenerTest extends TestCase
         $response->assertStatus(404);
         $response->assertJsonStructure([
             'message',
+        ]);
+    }
+
+    public function testItSuccessfullyEncodesAnSqid(): void
+    {
+        Config::set('shortener.driver', 'squid');
+        Config::set('shortener.code_length', 6);
+
+        $response = $this->post('/api/encode', [
+            'url' => 'https://www.example.com',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'data' => [
+                'url',
+                'code',
+            ],
+        ]);
+
+        $code = $response->json('data.code');
+        $this->assertEquals(6, strlen($code));
+    }
+
+    public function testItSuccessfullyDecodesAnSqid(): void
+    {
+        Config::set('shortener.driver', 'squid');
+        Config::set('shortener.code_length', 6);
+
+        $record = Url::factory()->create([
+            'url' => 'https://www.example.com',
+        ]);
+
+        $sqids = new Sqids(
+            Config::get('shortener.squid.alphabet'),
+            Config::get('shortener.code_length'),
+        );
+
+        $code = $sqids->encode([$record->id]);
+
+        $response = $this->get("/api/decode/{$code}");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'url',
+                'code',
+            ],
         ]);
     }
 }

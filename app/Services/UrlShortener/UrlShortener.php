@@ -3,6 +3,7 @@
 namespace App\Services\UrlShortener;
 
 use App\Services\UrlShortener\Hash\HashShortener;
+use App\Services\UrlShortener\Sqid\SqidShortener;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 
@@ -16,6 +17,7 @@ class UrlShortener
         // Can create a new url shortener driver by adding a new case here.
         return match ($driver) {
             'hash' => new HashShortener(),
+            'squid' => new SqidShortener(),
             default => throw new InvalidArgumentException("Invalid shortener driver: {$driver}"),
         };
     }
