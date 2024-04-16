@@ -27,7 +27,7 @@ return [
         'salt_length' => env('SHORTENER_SALT_LENGTH', 16),
     ],
 
-    'squid' => [
+    'sqid' => [
         'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
     ]
 

@@ -127,7 +127,7 @@ class UrlShortenerTest extends TestCase
 
     public function testItSuccessfullyEncodesAnSqid(): void
     {
-        Config::set('shortener.driver', 'squid');
+        Config::set('shortener.driver', 'sqid');
         Config::set('shortener.code_length', 6);
 
         $response = $this->post('/api/encode', [
@@ -148,7 +148,7 @@ class UrlShortenerTest extends TestCase
 
     public function testItSuccessfullyDecodesAnSqid(): void
     {
-        Config::set('shortener.driver', 'squid');
+        Config::set('shortener.driver', 'sqid');
         Config::set('shortener.code_length', 6);
 
         $record = Url::factory()->create([
@@ -156,7 +156,7 @@ class UrlShortenerTest extends TestCase
         ]);
 
         $sqids = new Sqids(
-            Config::get('shortener.squid.alphabet'),
+            Config::get('shortener.sqid.alphabet'),
             Config::get('shortener.code_length'),
         );
 

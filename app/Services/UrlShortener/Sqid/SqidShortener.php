@@ -13,7 +13,7 @@ final class SqidShortener implements UrlShortenerInterface
     public function encode(string $url): Url
     {
         $sqids = new Sqids(
-            Config::get('shortener.squid.alphabet'),
+            Config::get('shortener.sqid.alphabet'),
             Config::get('shortener.code_length'),
         );
 
@@ -29,7 +29,7 @@ final class SqidShortener implements UrlShortenerInterface
     public function decode(string $code): Url
     {
         $sqids = new Sqids(
-            Config::get('shortener.squid.alphabet'),
+            Config::get('shortener.sqid.alphabet'),
             Config::get('shortener.code_length'),
         );
 
