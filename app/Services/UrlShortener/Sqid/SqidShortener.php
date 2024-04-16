@@ -7,7 +7,7 @@ use App\Services\UrlShortener\UrlShortenerInterface;
 use Illuminate\Support\Facades\Config;
 use Sqids\Sqids;
 
-class SqidShortener implements UrlShortenerInterface
+final class SqidShortener implements UrlShortenerInterface
 {
 
     public function encode(string $url): Url
